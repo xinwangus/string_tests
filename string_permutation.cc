@@ -1,3 +1,5 @@
+/* g++ -std=c++11 */
+
 #include <string>
 #include <iostream>
 #include <deque>
@@ -64,8 +66,9 @@ main()
 	deque<string> out;
 
 	permutation(test, out);
-	while (!out.empty()) {
-		cout << out.front() << endl;
-		out.pop_front();
+	auto it = out.begin();
+
+	while (it != out.end()) {
+		cout << *it++ << endl;
 	}
 }
