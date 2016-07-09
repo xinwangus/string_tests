@@ -8,7 +8,7 @@
 using namespace std;
 
 void
-permutation(const char* str, unsigned int len, deque<string>& out)
+permutation_recursive(const char* str, unsigned int len, deque<string>& out)
 {
 	if ((str == 0) || (len == 0)) {
 		return;
@@ -25,7 +25,7 @@ permutation(const char* str, unsigned int len, deque<string>& out)
 	}
 
 	// call recursively.
-	permutation((str+1), (len-1), out);
+	permutation_recursive((str+1), (len-1), out);
 	// out now has all permutations for the rest of string.
 
 	// Post-processing.
@@ -54,9 +54,46 @@ permutation(const char* str, unsigned int len, deque<string>& out)
 }
 
 void
-permutation(string& s, deque<string>& out)
+permutation_recursive(string& s, deque<string>& out)
 {
-	permutation(s.c_str(), s.size(), out);
+	permutation_recursive(s.c_str(), s.size(), out);
+}
+
+
+/* this is a much better solution, avoids recursive calls */
+void
+permutation_iterative(string& s, deque<string>& out)
+{
+	if (s.size() == 0) { return; }
+	
+	for (auto itr = s.begin(); itr != s.end(); ++itr) {
+		if (itr == s.begin()) {
+			assert(out.empty());
+			out.push_back(string(&(*itr), 1));
+			continue;
+		}
+
+		// need to save off, as the out.size()
+		// will change.
+		int out_size = out.size();
+
+		for (int j = 0; j < out_size; j++) {
+			string tmp = out.front();
+			out.pop_front();
+
+			string tmp2;
+			for (int k = 0; k < tmp.size(); k++) {
+				tmp2 = tmp;
+				out.push_back(tmp2.insert(k, &(*itr), 1));
+			}
+
+			tmp2 = tmp;
+			out.push_back(tmp2.append(&(*itr), 1));
+		}	
+		// Loop invariant:
+		// by now "out" has all permutations of the string 
+		// from beginning to the current itr position.
+	}	
 }
 
 int
@@ -65,9 +102,10 @@ main()
 	string test("abcdef");
 	deque<string> out;
 
-	permutation(test, out);
-	auto it = out.begin();
+	//permutation_recursive(test, out);
+	permutation_iterative(test, out);
 
+	auto it = out.begin();
 	while (it != out.end()) {
 		cout << *it++ << endl;
 	}
