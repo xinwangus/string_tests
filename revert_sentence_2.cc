@@ -24,9 +24,9 @@ revert_sentence(string& input_s)
 	string s = input_s.substr(p2);
 	string ret = revert_sentence(s);
 	// <<<< recursive
-	return ret + 
-               input_s.substr(p1, (p2-p1)) + 
-               input_s.substr(0, p1);
+	return move(ret) + 
+               move(input_s.substr(p1, (p2-p1))) + 
+               move(input_s.substr(0, p1));
 }
 
 int
